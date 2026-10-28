@@ -28,7 +28,7 @@ AI tool used: **Claude** (Anthropic), as an agent with sub-agents. The assignmen
 | 5 | Two implementation steps | Commit `feat(approvals): enforce single-approver limits by role`, then commit `feat(approvals): require two distinct approvers above 500,000`. Each commit message says what changed and why. |
 | 6.1 | Unit tests for every rule, both negative rules included | `backend/tests/InvoiceApp.Tests/ApprovalServiceTests.cs` and `ApprovalLimitsTests.cs`. Every refusal test proves the invoice is unchanged with `InvoiceSnapshot` and `FakeInvoiceRepository.UpdateCount`. |
 | 6.2 | Playwright test for a rejected over-limit approval | `e2e/tests/over-limit-approval.spec.ts`, with page objects in `e2e/pages`. A second test, `two-approvers.spec.ts`, covers the dual-approval UI. |
-| 7 | Agent review with verdicts | [PR_DESCRIPTION.md](PR_DESCRIPTION.md): 11 findings, 10 fixed and 1 deferred with a reason |
+| 7 | Agent review with verdicts | [PR_DESCRIPTION.md](PR_DESCRIPTION.md): 11 findings: 10 fixed and 1 deferred with a reason. A re-review of the fix commit found 1 nit, also fixed. |
 | 8 | AI interaction log | [ai-logs/ai-interactions.jsonl](ai-logs/ai-interactions.jsonl). Summarise it with `node scripts/ai-log-summary.mjs`. |
 | 9 | Multiple agents and sub-agents | [.claude/agents](.claude/agents): `spec-writer`, `implementer`, `test-writer`, `e2e-tester`, `code-reviewer`, `mutation-analyst`. The orchestrator is [.claude/commands/ship-feature.md](.claude/commands/ship-feature.md). The review was run by a separate sub-agent. |
 

@@ -46,6 +46,14 @@ The `code-reviewer` sub-agent ran the `review-pr` prompt (`.claude/skills/review
 | R10 | nit | A contract example used INV-1006, which is now a seeded 750,000 invoice. | **fixed** | The examples now use ids that match the seed. `fix(approvals)` |
 | R11 | nit | `stryker-config.json` has `"break": 0`, so a falling score never fails a run. | **deferred** | The baseline score has not been measured on a real run yet, and setting a threshold blind would either never fire or always fail. Follow-up: once `docs/mutation/scores.md` exists, set `break` just below the "after" score and add it to CI. |
 
+### Re-review of the fix commit
+
+The same reviewer re-checked `fix(approvals)`. It found no compile errors and no failing tests.
+
+| ID | Sev | Finding (short) | Verdict | Reason / commit |
+| --- | --- | --- | --- | --- |
+| R12 | nit | The README test block does `cd e2e` and later `cd backend`, which fails when the lines are run in order. | **fixed** | Both commands now run in subshells. `docs(readme)` |
+
 ## Tests reviewed by hand
 
 These are the generated tests I changed after reading them. The interaction log has the full notes.

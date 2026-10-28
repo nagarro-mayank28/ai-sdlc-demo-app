@@ -31,9 +31,9 @@ Invoices move through Draft, Pending Approval, (Awaiting Second Approval for amo
 
 ```
 dotnet test backend/InvoiceApp.sln                       # unit tests
-cd e2e && npm install && npx playwright install chromium && npm test   # end-to-end
+(cd e2e && npm install && npx playwright install chromium && npm test)   # end-to-end
 dotnet tool install -g dotnet-stryker --version 4.13.0  # once
-cd backend && dotnet stryker -f stryker-config.json     # mutation testing
+(cd backend && dotnet stryker -f stryker-config.json)   # mutation testing
 bash scripts/mutation-before-after.sh                   # before/after scores
 ```
 
