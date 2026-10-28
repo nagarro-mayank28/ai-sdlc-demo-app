@@ -48,15 +48,26 @@ How the tests were reviewed: for every generated test I asked "would this fail i
 
 ## Mutation scores (Stryker.NET 4.13.0)
 
-Mutated files: `ApprovalService.cs` and `ApprovalLimits.cs`. "Before" is `main` with its original tests; "after" is this branch.
+Mutated files: `ApprovalService.cs` and `ApprovalLimits.cs`. "Before" is `main` (66cb3f9) with its original 7 tests. "After" is this branch. Each row below is a real run of `bash scripts/mutation-before-after.sh`; the full output of the latest run is in `docs/mutation/scores.md`.
 
-```
-<PASTE THE CONTENTS OF docs/mutation/scores.md HERE AFTER RUNNING:
-   dotnet tool install -g dotnet-stryker --version 4.13.0
-   bash scripts/mutation-before-after.sh>
-```
+| Run | Score | Killed | Timeout | Survived | Compile errors | What it showed |
+| --- | --- | --- | --- | --- | --- | --- |
+| **before** (main) | **60.00%** | 12 | 0 | 8 | 0 | Baseline. |
+| after, run 1 | 82.22% | 36 | 1 | 8 | 16 | Misleading. One mutant of `?? throw` did not compile, so Stryker's Safe Mode dropped every mutant in `ApproveUnderLock`, the method that holds the approval rules. |
+| after, run 2 | 86.67% | 52 | 0 | 8 | 0 | Rewrote that line as an explicit null check (same behaviour). The rule method is now fully mutated. `ApprovalLimits.cs` scores 100%. |
+| **after, final** | `<PASTE FINAL SCORE>` | | | | | After adding tests for the 8 survivors from run 2. |
 
-What survived and what I did about each surviving mutant: `<fill in from the HTML report: kill with a test, or explain as an equivalent mutant>`
+### Survivors from run 2, and the verdict on each
+
+| Mutant | What it meant | Verdict |
+| --- | --- | --- |
+| `ApprovalService.cs:99` Reject without `EnsureDecidable` | An Approved or Rejected invoice could be rejected again, and no test noticed. | **Killed.** New test `Reject_RefusesInvoiceThatIsNotPending_AndChangesNothing` (Draft, Approved, Rejected). |
+| `:37` Submit without `Update` | A submit that never saved would pass. | **Killed.** `Submit_MovesDraftToPendingApproval` now asserts `UpdateCount == 1`. |
+| `:105` Reject without `Update` | A reject that never saved would pass. | **Killed.** `Reject_RecordsReasonAndApprover` now asserts `UpdateCount == 1`. |
+| `:33`, `:93`, `:160`, `:167` messages emptied (submit, reject reason, not found, not pending) | No test read these messages. | **Killed.** Each test now asserts the key phrase of its message. |
+| `:129` second half of the fail-closed message emptied | Only the first half was asserted. | **Killed.** It now asserts "cannot be approved until this is corrected". |
+
+`stryker-config.json` now sets `break: 80`, so a later change that drops the score below 80% fails the run. The baseline run uses `--break-at 0` because it is expected to score lower.
 
 ## Decisions and clarifications
 

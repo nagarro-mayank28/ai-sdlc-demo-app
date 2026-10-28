@@ -21,7 +21,10 @@ run_stryker() {
   if [ "$checkout" != "$ROOT" ]; then
     cp "$ROOT/backend/stryker-config.json" "$checkout/backend/stryker-config.json"
   fi
-  (cd "$checkout/backend" && dotnet stryker -f stryker-config.json --output "$OUT/$label") | tee "$OUT/$label.log"
+  # The baseline is expected to score below the break threshold; it must not stop the script.
+  local break_at=()
+  if [ "$label" = "before" ]; then break_at=(--break-at 0); fi
+  (cd "$checkout/backend" && dotnet stryker -f stryker-config.json --output "$OUT/$label" "${break_at[@]}") | tee "$OUT/$label.log"
 }
 
 score_of() {

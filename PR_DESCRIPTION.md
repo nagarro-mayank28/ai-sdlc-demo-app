@@ -44,7 +44,7 @@ The `code-reviewer` sub-agent ran the `review-pr` prompt (`.claude/skills/review
 | R8 | low | The README lifecycle and test commands are out of date. | **fixed** | Added the new status and the e2e and mutation commands. `fix(approvals)` |
 | R9 | low | UC-1 still says "over $1,000 needs a second approver", which conflicts with this spec. | **fixed** | Added a note in UC-1 that dual approval now follows spec 001. The UC-1 brief itself stays as written because it is a separate, unbuilt feature. `fix(approvals)` |
 | R10 | nit | A contract example used INV-1006, which is now a seeded 750,000 invoice. | **fixed** | The examples now use ids that match the seed. `fix(approvals)` |
-| R11 | nit | `stryker-config.json` has `"break": 0`, so a falling score never fails a run. | **deferred** | The baseline score has not been measured on a real run yet, and setting a threshold blind would either never fire or always fail. Follow-up: once `docs/mutation/scores.md` exists, set `break` just below the "after" score and add it to CI. |
+| R11 | nit | `stryker-config.json` has `"break": 0`, so a falling score never fails a run. | **fixed** (after first deferring it) | Deferred at first, because no score had been measured yet. Once the real runs gave 60.00% before and 86.67% after, I set the thresholds to `break: 80` (high 90, low 85). The baseline run passes `--break-at 0`. `test(mutation)` |
 
 ### Re-review of the fix commit
 
@@ -53,6 +53,15 @@ The same reviewer re-checked `fix(approvals)`. It found no compile errors and no
 | ID | Sev | Finding (short) | Verdict | Reason / commit |
 | --- | --- | --- | --- | --- |
 | R12 | nit | The README test block does `cd e2e` and later `cd backend`, which fails when the lines are run in order. | **fixed** | Both commands now run in subshells. `docs(readme)` |
+
+## Mutation testing
+
+| Run | Score |
+| --- | --- |
+| before (main) | 60.00% |
+| after, run 1 | 82.22%. Misleading: Safe Mode dropped all mutants in the rule method because of a compile error caused by the `?? throw` mutant. Fixed in `fix(mutation)`. |
+| after, run 2 | 86.67%, with 8 survivors. All 8 are killed by tests added in `test(mutation)`. |
+| after, final | `<PASTE FINAL SCORE>` |
 
 ## Tests reviewed by hand
 

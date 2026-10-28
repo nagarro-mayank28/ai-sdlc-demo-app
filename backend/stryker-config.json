@@ -4,6 +4,6 @@
     "test-projects": ["./tests/InvoiceApp.Tests/InvoiceApp.Tests.csproj"],
     "mutate": ["**/ApprovalService.cs", "**/ApprovalLimits.cs"],
     "reporters": ["progress", "cleartext", "html", "json"],
-    "thresholds": { "high": 80, "low": 60, "break": 0 }
+    "thresholds": { "high": 90, "low": 85, "break": 80 }
   }
 }
