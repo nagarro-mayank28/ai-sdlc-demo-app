@@ -90,9 +90,9 @@ description: "Task list for approval limits by role"
 
 ## Phase 6: Polish
 
-- [ ] T024 Run the `review-pr` skill via the `code-reviewer` sub-agent; give every finding a verdict in `PR_DESCRIPTION.md`
-- [ ] T025 Fix accepted findings in their own commit
-- [ ] T026 Mutation score after; write `ASSIGNMENT.md`
+- [x] T024 Run the `review-pr` skill via the `code-reviewer` sub-agent; give every finding a verdict in `PR_DESCRIPTION.md`
+- [x] T025 Fix accepted findings in their own commit
+- [x] T026 Mutation score after; write `ASSIGNMENT.md`
 
 ## Dependencies
 
