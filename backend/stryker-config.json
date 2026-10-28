@@ -1,0 +1,9 @@
+{
+  "stryker-config": {
+    "project": "InvoiceApp.Domain.csproj",
+    "test-projects": ["./tests/InvoiceApp.Tests/InvoiceApp.Tests.csproj"],
+    "mutate": ["**/ApprovalService.cs", "**/ApprovalLimits.cs"],
+    "reporters": ["progress", "cleartext", "html", "json"],
+    "thresholds": { "high": 80, "low": 60, "break": 0 }
+  }
+}

@@ -30,8 +30,8 @@ description: "Task list for approval limits by role"
 
 ## Phase 2: Foundational
 
-- [ ] T004 [P] Add `backend/stryker-config.json` and `scripts/mutation-before-after.sh`; record the baseline mutation score on `main`
-- [ ] T005 [P] Add `UpdateCount` to `backend/tests/InvoiceApp.Tests/FakeInvoiceRepository.cs` and `InvoiceSnapshot.cs` so tests can prove "nothing changed"
+- [x] T004 [P] Add `backend/stryker-config.json` and `scripts/mutation-before-after.sh`; record the baseline mutation score on `main`
+- [x] T005 [P] Add `UpdateCount` to `backend/tests/InvoiceApp.Tests/FakeInvoiceRepository.cs` and `InvoiceSnapshot.cs` so tests can prove "nothing changed"
 
 **Checkpoint**: tests can prove a refusal changed nothing.
 
@@ -43,16 +43,16 @@ description: "Task list for approval limits by role"
 
 ### Tests for User Story 1
 
-- [ ] T006 [P] [US1] `ApprovalLimitsTests.cs`: limit per role, unknown role has none, boundaries
-- [ ] T007 [P] [US1] `ApprovalServiceTests.cs`: Manager at 50,000.00 approves; at 50,000.01 refused, unchanged, `UpdateCount == 0`; Director at 50,000.01 and 500,000.00 approves; Admin and retired `Approver` refused; existing tests moved to `Approver`
+- [x] T006 [P] [US1] `ApprovalLimitsTests.cs`: limit per role, unknown role has none, boundaries
+- [x] T007 [P] [US1] `ApprovalServiceTests.cs`: Manager at 50,000.00 approves; at 50,000.01 refused, unchanged, `UpdateCount == 0`; Director at 50,000.01 and 500,000.00 approves; Admin and retired `Approver` refused; existing tests moved to `Approver`
 
 ### Implementation for User Story 1
 
-- [ ] T008 [P] [US1] `Approver.cs`, `ApprovalDeniedException.cs`, `ApprovalLimits.cs` in Domain
-- [ ] T009 [US1] `ApprovalService.Approve(string invoiceId, Approver approver)`: all checks before any assignment
-- [ ] T010 [US1] `ApiControllerBase.Handle`: map `ApprovalDeniedException` to 422
-- [ ] T011 [US1] `ApprovalsController`: roles Manager, Director, Admin; build `Approver` from the session
-- [ ] T012 [US1] `appsettings.json`, `README.md`: `demo.manager`, `demo.director`, `demo.director2`, `demo.admin`
+- [x] T008 [P] [US1] `Approver.cs`, `ApprovalDeniedException.cs`, `ApprovalLimits.cs` in Domain
+- [x] T009 [US1] `ApprovalService.Approve(string invoiceId, Approver approver)`: all checks before any assignment
+- [x] T010 [US1] `ApiControllerBase.Handle`: map `ApprovalDeniedException` to 422
+- [x] T011 [US1] `ApprovalsController`: roles Manager, Director, Admin; build `Approver` from the session
+- [x] T012 [US1] `appsettings.json`, `README.md`: `demo.manager`, `demo.director`, `demo.director2`, `demo.admin`
 
 **Checkpoint**: single-approver limits work end to end; `dotnet test` green.
 

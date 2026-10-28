@@ -1,8 +1,11 @@
+using static InvoiceApp.Domain.ApprovalLimits;
+
 namespace InvoiceApp.Domain;
 
 /// <summary>
 /// Moves an invoice through its lifecycle: Draft -> PendingApproval -> Approved or Rejected.
-/// One invoice at a time, decided as a whole by a single approver.
+/// Approvals are limited by the approver's role (see <see cref="ApprovalLimits"/>).
+/// Every rule is checked before the invoice is touched, so a refused approval changes nothing.
 /// </summary>
 public class ApprovalService
 {
@@ -28,13 +31,24 @@ public class ApprovalService
         return invoice;
     }
 
-    public Invoice Approve(string invoiceId, string approver)
+    public Invoice Approve(string invoiceId, Approver approver)
     {
+        ArgumentNullException.ThrowIfNull(approver);
+
         var invoice = Find(invoiceId);
         EnsurePending(invoice);
 
+        var limit = SingleApproverLimitFor(approver.Role)
+            ?? throw new ApprovalDeniedException($"Role {approver.Role} has no approval authority.");
+
+        if (invoice.Amount > limit)
+        {
+            throw new ApprovalDeniedException(OverLimitReason(invoice, approver, limit));
+        }
+
+        // All checks passed: only now change the invoice.
         invoice.Status = InvoiceStatus.Approved;
-        invoice.DecidedBy = approver;
+        invoice.DecidedBy = approver.Username;
         invoice.DecidedAt = DateTime.UtcNow;
         _repository.Update(invoice);
         return invoice;
@@ -56,6 +70,16 @@ public class ApprovalService
         invoice.DecisionNote = reason;
         _repository.Update(invoice);
         return invoice;
+    }
+
+    private static string OverLimitReason(Invoice invoice, Approver approver, decimal limit)
+    {
+        var nextStep = invoice.Amount > DirectorLimit
+            ? $"Invoices over {FormatAmount(DirectorLimit)} need two approvers."
+            : "A Director must approve it.";
+
+        return $"Invoice {invoice.Id} is {FormatAmount(invoice.Amount)}, which is over the " +
+               $"{approver.Role} approval limit of {FormatAmount(limit)}. {nextStep}";
     }
 
     private Invoice Find(string invoiceId) =>
