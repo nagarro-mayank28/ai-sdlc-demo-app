@@ -53,10 +53,18 @@ public class ApprovalService
         var invoice = Find(invoiceId);
         EnsureDecidable(invoice);
 
-        var limit = SingleApproverLimitFor(approver.Role)
-            ?? throw new ApprovalDeniedException(
+        // Written as an explicit null check rather than "?? throw" so mutation testing can mutate this
+        // method: Stryker's mutant of "?? throw" leaves a decimal? that does not compile, and Stryker then
+        // drops every mutant in the method.
+        var roleLimit = SingleApproverLimitFor(approver.Role);
+        if (roleLimit is null)
+        {
+            throw new ApprovalDeniedException(
                 $"Invoice {invoice.Id} cannot be approved by {approver.Username}: role {approver.Role} " +
                 "has no approval authority. Only a Manager or a Director can approve invoices.");
+        }
+
+        var limit = roleLimit.Value;
 
         if (invoice.Status == InvoiceStatus.AwaitingSecondApproval)
         {

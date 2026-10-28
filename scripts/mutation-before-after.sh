@@ -29,15 +29,19 @@ score_of() {
     const report = require(process.argv[1]);
     let detected = 0, undetected = 0;
     const counts = {};
-    for (const file of Object.values(report.files)) {
+    const tested = [];
+    for (const [path, file] of Object.entries(report.files)) {
+      let fileHasMutants = false;
       for (const mutant of file.mutants) {
         counts[mutant.status] = (counts[mutant.status] || 0) + 1;
-        if (["Killed", "Timeout"].includes(mutant.status)) detected++;
-        if (["Survived", "NoCoverage"].includes(mutant.status)) undetected++;
+        if (["Killed", "Timeout"].includes(mutant.status)) { detected++; fileHasMutants = true; }
+        if (["Survived", "NoCoverage"].includes(mutant.status)) { undetected++; fileHasMutants = true; }
       }
+      if (fileHasMutants) tested.push(path.split(/[\\/]/).pop());
     }
     const score = detected + undetected ? (100 * detected / (detected + undetected)).toFixed(2) : "n/a";
-    console.log(`${score}% | ${JSON.stringify(counts)} | files: ${Object.keys(report.files).map(f => f.split("/").pop()).join(", ")}`);
+    const statuses = Object.entries(counts).map(([status, count]) => `${status} ${count}`).join(", ");
+    console.log(`${score}% | ${statuses} | ${tested.join(", ")}`);
   ' "$(ls "$1"/reports/mutation-report.json)"
 }
 
@@ -50,10 +54,16 @@ run_stryker "$ROOT" after
   echo
   echo "Mutated files: ApprovalService.cs, ApprovalLimits.cs. Score = (killed + timeout) / (killed + timeout + survived + no coverage)."
   echo
-  echo "| Run | Commit | Score | Mutant statuses | Files |"
+  echo "| Run | Commit | Score | Mutant statuses | Files with tested mutants |"
   echo "| --- | --- | --- | --- | --- |"
   echo "| before | $(git -C "$ROOT" rev-parse --short "$BASELINE_REF") ($BASELINE_REF) | $(score_of "$OUT/before") |"
   echo "| after | $(git -C "$ROOT" rev-parse --short HEAD) (HEAD) | $(score_of "$OUT/after") |"
+  echo
+  echo "Surviving mutants after the change:"
+  echo
+  echo '```'
+  node "$ROOT/scripts/mutation-survivors.mjs" "$OUT/after/reports/mutation-report.json"
+  echo '```'
 } > "$OUT/scores.md"
 
 cat "$OUT/scores.md"
