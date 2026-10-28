@@ -11,3 +11,4 @@ playwright-report/
 StrykerOutput/
 docs/mutation/before/
 docs/mutation/after/
+docs/mutation/*.log
