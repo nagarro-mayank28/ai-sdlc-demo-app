@@ -18,7 +18,9 @@ run_stryker() {
   local checkout="$1" label="$2"
   echo "== Stryker on $label ($checkout)"
   # The baseline has no config; use the same one so both runs mutate the same files.
-  cp "$ROOT/backend/stryker-config.json" "$checkout/backend/stryker-config.json"
+  if [ "$checkout" != "$ROOT" ]; then
+    cp "$ROOT/backend/stryker-config.json" "$checkout/backend/stryker-config.json"
+  fi
   (cd "$checkout/backend" && dotnet stryker -f stryker-config.json --output "$OUT/$label") | tee "$OUT/$label.log"
 }
 

@@ -17,4 +17,9 @@ export class LoginPage {
     await this.page.getByRole('button', { name: 'Sign in' }).click();
     await expect(this.page.getByRole('button', { name: 'Sign out' })).toBeVisible();
   }
+
+  async signOut() {
+    await this.page.getByRole('button', { name: 'Sign out' }).click();
+    await expect(this.page.getByRole('button', { name: 'Sign in' })).toBeVisible();
+  }
 }

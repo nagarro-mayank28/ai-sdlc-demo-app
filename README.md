@@ -25,12 +25,16 @@ These are demo accounts for a local, in-memory app. They are not real credential
 2. Submit it for approval.
 3. An approver approves it within their limit, or rejects it with a reason. Above 500,000.00 two different people must approve, the second a Director. See [spec 001](specs/001-approval-limits/spec.md).
 
-Invoices move through Draft, Pending Approval, then Approved or Rejected.
+Invoices move through Draft, Pending Approval, (Awaiting Second Approval for amounts over 500,000.00), then Approved or Rejected.
 
 ## Tests
 
 ```
-dotnet test backend/InvoiceApp.sln
+dotnet test backend/InvoiceApp.sln                       # unit tests
+cd e2e && npm install && npx playwright install chromium && npm test   # end-to-end
+dotnet tool install -g dotnet-stryker --version 4.13.0  # once
+cd backend && dotnet stryker -f stryker-config.json     # mutation testing
+bash scripts/mutation-before-after.sh                   # before/after scores
 ```
 
 ## Project layout

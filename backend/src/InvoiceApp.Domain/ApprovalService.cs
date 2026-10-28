@@ -11,6 +11,11 @@ namespace InvoiceApp.Domain;
 /// </summary>
 public class ApprovalService
 {
+    // The in-memory repository hands out live references and the service is created per request,
+    // so decisions are serialised here: two concurrent approvals of one invoice cannot interleave
+    // between a check and the change it guards.
+    private static readonly object DecisionLock = new();
+
     private readonly IInvoiceRepository _repository;
 
     public ApprovalService(IInvoiceRepository repository)
@@ -37,11 +42,21 @@ public class ApprovalService
     {
         ArgumentNullException.ThrowIfNull(approver);
 
+        lock (DecisionLock)
+        {
+            return ApproveUnderLock(invoiceId, approver);
+        }
+    }
+
+    private Invoice ApproveUnderLock(string invoiceId, Approver approver)
+    {
         var invoice = Find(invoiceId);
         EnsureDecidable(invoice);
 
         var limit = SingleApproverLimitFor(approver.Role)
-            ?? throw new ApprovalDeniedException($"Role {approver.Role} has no approval authority.");
+            ?? throw new ApprovalDeniedException(
+                $"Invoice {invoice.Id} cannot be approved by {approver.Username}: role {approver.Role} " +
+                "has no approval authority. Only a Manager or a Director can approve invoices.");
 
         if (invoice.Status == InvoiceStatus.AwaitingSecondApproval)
         {
@@ -70,23 +85,27 @@ public class ApprovalService
             throw new ArgumentException("A reason is required to reject an invoice.", nameof(reason));
         }
 
-        var invoice = Find(invoiceId);
-        EnsureDecidable(invoice);
+        lock (DecisionLock)
+        {
+            var invoice = Find(invoiceId);
+            EnsureDecidable(invoice);
 
-        invoice.Status = InvoiceStatus.Rejected;
-        invoice.DecidedBy = approver;
-        invoice.DecidedAt = DateTime.UtcNow;
-        invoice.DecisionNote = reason;
-        _repository.Update(invoice);
-        return invoice;
+            invoice.Status = InvoiceStatus.Rejected;
+            invoice.DecidedBy = approver;
+            invoice.DecidedAt = DateTime.UtcNow;
+            invoice.DecisionNote = reason;
+            _repository.Update(invoice);
+            return invoice;
+        }
     }
 
     /// <summary>First of two approvals: any Manager or Director. The invoice is not approved yet.</summary>
     private Invoice GiveFirstApproval(Invoice invoice, Approver approver)
     {
-        invoice.Status = InvoiceStatus.AwaitingSecondApproval;
+        // First approver before status: an invoice is never AwaitingSecondApproval without one.
         invoice.FirstApprovedBy = approver.Username;
         invoice.FirstApprovedAt = DateTime.UtcNow;
+        invoice.Status = InvoiceStatus.AwaitingSecondApproval;
         _repository.Update(invoice);
         return invoice;
     }
@@ -94,6 +113,14 @@ public class ApprovalService
     /// <summary>Second of two approvals: a different person, and a Director. Checks first, then changes.</summary>
     private Invoice GiveSecondApproval(Invoice invoice, Approver approver)
     {
+        if (string.IsNullOrWhiteSpace(invoice.FirstApprovedBy))
+        {
+            // Fail closed: without a recorded first approver we cannot prove two different people approved.
+            throw new ApprovalDeniedException(
+                $"Invoice {invoice.Id} is awaiting a second approval but has no recorded first approver; " +
+                "it cannot be approved until this is corrected.");
+        }
+
         if (IsSamePerson(invoice.FirstApprovedBy, approver.Username))
         {
             throw new ApprovalDeniedException(

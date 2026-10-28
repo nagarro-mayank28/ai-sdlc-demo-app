@@ -76,7 +76,7 @@
       const summary = el('span', {}, `${invoice.id} · ${invoice.customerName} · ${money.format(invoice.amount)}`);
       if (invoice.status === 'AwaitingSecondApproval') {
         summary.append(el('span', { class: 'awaiting-note' },
-          `Awaiting second approval (first: ${invoice.firstApprovedBy}). A different Director must approve.`));
+          `Awaiting second approval (first: ${invoice.firstApprovedBy})`));
       }
 
       return el('li', {},

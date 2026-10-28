@@ -208,6 +208,8 @@ public class ApprovalServiceTests
         var denial = AssertDeniedAndUnchanged(PendingInvoice(Amount("10.00")), Admin);
 
         Assert.Contains("Admin has no approval authority", denial.Message);
+        Assert.Contains("INV-1", denial.Message);
+        Assert.Contains("Only a Manager or a Director can approve", denial.Message);
     }
 
     [Fact]
@@ -299,7 +301,8 @@ public class ApprovalServiceTests
         var denial = AssertDeniedAndUnchanged(
             service, repository, invoice, new Approver(sameUserSpelledDifferently, "Director"));
 
-        Assert.Contains("already gave the first approval", denial.Message);
+        Assert.Contains("already gave the first approval on invoice INV-1", denial.Message);
+        Assert.Contains(sameUserSpelledDifferently, denial.Message);
         Assert.Contains("different person", denial.Message);
         Assert.Equal(InvoiceStatus.AwaitingSecondApproval, invoice.Status);
         Assert.Null(invoice.DecidedBy);
@@ -313,6 +316,7 @@ public class ApprovalServiceTests
 
         var denial = AssertDeniedAndUnchanged(service, repository, invoice, Manager);
 
+        Assert.Contains("The second approval on invoice INV-1 (over 500,000.00)", denial.Message);
         Assert.Contains("must come from a Director", denial.Message);
         Assert.Contains("demo.manager is a Manager", denial.Message);
         Assert.Equal("demo.director", invoice.FirstApprovedBy);
@@ -367,5 +371,25 @@ public class ApprovalServiceTests
 
         Assert.Equal(InvoiceStatus.Rejected, result.Status);
         Assert.Equal("Budget not signed off", result.DecisionNote);
+    }
+
+    [Fact]
+    public void FirstApproverStoredWithDifferentCaseAndSpaces_StillCountsAsTheSamePerson()
+    {
+        var (service, repository, invoice) = AwaitingSecondApprovalFrom(new Approver(" Demo.Director ", "Director"));
+
+        var denial = AssertDeniedAndUnchanged(service, repository, invoice, Director);
+
+        Assert.Contains("different person", denial.Message);
+    }
+
+    [Fact]
+    public void AwaitingSecondApprovalWithNoRecordedFirstApprover_FailsClosed()
+    {
+        var invoice = InvoiceWith("INV-1", InvoiceStatus.AwaitingSecondApproval, Amount("750000.00"));
+
+        var denial = AssertDeniedAndUnchanged(invoice, Director);
+
+        Assert.Contains("no recorded first approver", denial.Message);
     }
 }

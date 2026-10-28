@@ -46,6 +46,8 @@ public class ApprovalLimitsTests
     [InlineData("demo.director", "demo.director", true)]
     [InlineData("demo.director", "Demo.Director", true)]
     [InlineData("demo.director", " demo.director  ", true)]
+    [InlineData(" Demo.Director ", "demo.director", true)]
+    [InlineData("DEMO.DIRECTOR", "demo.director", true)]
     [InlineData("demo.director", "demo.director2", false)]
     [InlineData(null, "demo.director", false)]
     [InlineData("demo.director", null, false)]

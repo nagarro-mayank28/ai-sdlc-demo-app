@@ -16,10 +16,11 @@ Body: none. The approver is the signed-in user.
 
 Example 422 reasons:
 
-- `Invoice INV-1006 is 75,000.00, which is over the Manager approval limit of 50,000.00. A Director must approve it.`
-- `demo.director already gave the first approval on invoice INV-1007; the second approval must come from a different person.`
-- `The second approval on invoice INV-1007 (over 500,000.00) must come from a Director; demo.manager is a Manager.`
-- `Role Admin has no approval authority.`
+- `Invoice INV-1007 is 75,000.00, which is over the Manager approval limit of 50,000.00. A Director must approve it.`
+- `demo.director already gave the first approval on invoice INV-1006; the second approval must come from a different person.`
+- `The second approval on invoice INV-1006 (over 500,000.00) must come from a Director; demo.manager is a Manager.`
+- `Invoice INV-1007 cannot be approved by demo.admin: role Admin has no approval authority. Only a Manager or a Director can approve invoices.`
+- `Invoice INV-1006 is awaiting a second approval but has no recorded first approver; it cannot be approved until this is corrected.`
 
 ## POST /api/approvals/{invoiceId}/reject
 
