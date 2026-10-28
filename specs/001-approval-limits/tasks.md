@@ -64,18 +64,18 @@ description: "Task list for approval limits by role"
 
 ### Tests for User Story 2
 
-- [ ] T013 [US2] First approval (Director or Manager) moves to `AwaitingSecondApproval`, not Approved, records first approver
-- [ ] T014 [US2] Different Director completes it; first approver kept
-- [ ] T015 [US2] **Negative**: same Director twice refused (exact, different case, padded) — reason, unchanged, `UpdateCount == 0`
-- [ ] T016 [US2] **Negative**: Manager as second approver refused — reason, unchanged, first approval kept
-- [ ] T017 [US2] Admin as first approver refused; reject while awaiting second approval works; approve after Approved is 409
+- [x] T013 [US2] First approval (Director or Manager) moves to `AwaitingSecondApproval`, not Approved, records first approver
+- [x] T014 [US2] Different Director completes it; first approver kept
+- [x] T015 [US2] **Negative**: same Director twice refused (exact, different case, padded) — reason, unchanged, `UpdateCount == 0`
+- [x] T016 [US2] **Negative**: Manager as second approver refused — reason, unchanged, first approval kept
+- [x] T017 [US2] Admin as first approver refused; reject while awaiting second approval works; approve after Approved is 409
 
 ### Implementation for User Story 2
 
-- [ ] T018 [US2] `InvoiceStatus.AwaitingSecondApproval`; `Invoice.FirstApprovedBy`, `FirstApprovedAt`
-- [ ] T019 [US2] `ApprovalLimits.RequiresTwoApprovers`, `ApprovalLimits.IsSamePerson`
-- [ ] T020 [US2] `ApprovalService`: first/second approval paths; `EnsureDecidable` accepts both pending states
-- [ ] T021 [US2] `wwwroot/app.js` + `styles.css`: list awaiting-second invoices with first approver
+- [x] T018 [US2] `InvoiceStatus.AwaitingSecondApproval`; `Invoice.FirstApprovedBy`, `FirstApprovedAt`
+- [x] T019 [US2] `ApprovalLimits.RequiresTwoApprovers`, `ApprovalLimits.IsSamePerson`
+- [x] T020 [US2] `ApprovalService`: first/second approval paths; `EnsureDecidable` accepts both pending states
+- [x] T021 [US2] `wwwroot/app.js` + `styles.css`: list awaiting-second invoices with first approver
 
 **Checkpoint**: all unit tests green; manual quickstart steps 4–5 pass.
 

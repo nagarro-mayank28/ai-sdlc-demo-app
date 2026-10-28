@@ -12,6 +12,8 @@ internal sealed record InvoiceSnapshot(
     decimal Amount,
     InvoiceStatus Status,
     DateTime CreatedAt,
+    string? FirstApprovedBy,
+    DateTime? FirstApprovedAt,
     string? DecidedBy,
     DateTime? DecidedAt,
     string? DecisionNote)
@@ -22,6 +24,8 @@ internal sealed record InvoiceSnapshot(
         invoice.Amount,
         invoice.Status,
         invoice.CreatedAt,
+        invoice.FirstApprovedBy,
+        invoice.FirstApprovedAt,
         invoice.DecidedBy,
         invoice.DecidedAt,
         invoice.DecisionNote);

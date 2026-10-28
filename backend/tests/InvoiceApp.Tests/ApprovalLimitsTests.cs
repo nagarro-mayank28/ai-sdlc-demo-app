@@ -32,4 +32,25 @@ public class ApprovalLimitsTests
     {
         Assert.Equal("1,234,567.50", ApprovalLimits.FormatAmount(1_234_567.5m));
     }
+
+    [Theory]
+    [InlineData("500000.00", false)]
+    [InlineData("500000.01", true)]
+    [InlineData("10.00", false)]
+    public void RequiresTwoApprovers_OnlyAboveFiveHundredThousand(string amount, bool expected)
+    {
+        Assert.Equal(expected, ApprovalLimits.RequiresTwoApprovers(decimal.Parse(amount, System.Globalization.CultureInfo.InvariantCulture)));
+    }
+
+    [Theory]
+    [InlineData("demo.director", "demo.director", true)]
+    [InlineData("demo.director", "Demo.Director", true)]
+    [InlineData("demo.director", " demo.director  ", true)]
+    [InlineData("demo.director", "demo.director2", false)]
+    [InlineData(null, "demo.director", false)]
+    [InlineData("demo.director", null, false)]
+    public void IsSamePerson_IgnoresCaseAndSurroundingSpaces(string? first, string? second, bool expected)
+    {
+        Assert.Equal(expected, ApprovalLimits.IsSamePerson(first, second));
+    }
 }

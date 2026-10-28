@@ -22,6 +22,18 @@ public static class ApprovalLimits
         _ => null
     };
 
+    /// <summary>Above the director limit one person can never approve alone.</summary>
+    public static bool RequiresTwoApprovers(decimal amount) => amount > DirectorLimit;
+
+    /// <summary>
+    /// True when two usernames are the same person: compared trimmed and ignoring case,
+    /// so "demo.director" and " Demo.Director" cannot count as two approvers.
+    /// </summary>
+    public static bool IsSamePerson(string? firstUsername, string? secondUsername) =>
+        firstUsername is not null
+        && secondUsername is not null
+        && string.Equals(firstUsername.Trim(), secondUsername.Trim(), StringComparison.OrdinalIgnoreCase);
+
     /// <summary>Formats money the same way in every message, for example 50,000.00.</summary>
     public static string FormatAmount(decimal amount) =>
         amount.ToString("N2", CultureInfo.InvariantCulture);
