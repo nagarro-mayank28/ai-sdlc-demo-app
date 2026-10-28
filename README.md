@@ -12,8 +12,10 @@ Open http://localhost:5000 and sign in:
 
 | User | Password | Role |
 | --- | --- | --- |
-| `demo.approver` | `ChangeMe123!` | Approver |
-| `demo.admin` | `ChangeMe123!` | Admin |
+| `demo.manager` | `ChangeMe123!` | Manager (approves up to 50,000.00) |
+| `demo.director` | `ChangeMe123!` | Director (approves up to 500,000.00; second approver above that) |
+| `demo.director2` | `ChangeMe123!` | Director (a second, different director) |
+| `demo.admin` | `ChangeMe123!` | Admin (can reject and delete, cannot approve) |
 
 These are demo accounts for a local, in-memory app. They are not real credentials.
 
@@ -21,14 +23,18 @@ These are demo accounts for a local, in-memory app. They are not real credential
 
 1. Create an invoice (it starts as a draft).
 2. Submit it for approval.
-3. An approver approves it, or rejects it with a reason.
+3. An approver approves it within their limit, or rejects it with a reason. Above 500,000.00 two different people must approve, the second a Director. See [spec 001](specs/001-approval-limits/spec.md).
 
-Invoices move through Draft, Pending Approval, then Approved or Rejected.
+Invoices move through Draft, Pending Approval, (Awaiting Second Approval for amounts over 500,000.00), then Approved or Rejected.
 
 ## Tests
 
 ```
-dotnet test backend/InvoiceApp.sln
+dotnet test backend/InvoiceApp.sln                       # unit tests
+(cd e2e && npm install && npx playwright install chromium && npm test)   # end-to-end
+dotnet tool install -g dotnet-stryker --version 4.13.0  # once
+(cd backend && dotnet stryker -f stryker-config.json)   # mutation testing
+bash scripts/mutation-before-after.sh                   # before/after scores
 ```
 
 ## Project layout

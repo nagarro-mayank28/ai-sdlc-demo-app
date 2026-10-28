@@ -9,7 +9,7 @@ export default defineConfig({
     baseURL: 'http://localhost:5000',
     trace: 'on-first-retry',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], channel: process.env.PW_CHANNEL } }],
   webServer: {
     command: 'dotnet run --project ../backend/src/InvoiceApp.Api',
     url: 'http://localhost:5000',
