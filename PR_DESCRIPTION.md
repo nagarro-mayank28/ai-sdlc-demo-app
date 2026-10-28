@@ -61,7 +61,7 @@ The same reviewer re-checked `fix(approvals)`. It found no compile errors and no
 | before (main) | 60.00% |
 | after, run 1 | 82.22%. Misleading: Safe Mode dropped all mutants in the rule method because of a compile error caused by the `?? throw` mutant. Fixed in `fix(mutation)`. |
 | after, run 2 | 86.67%, with 8 survivors. All 8 are killed by tests added in `test(mutation)`. |
-| after, final | `<PASTE FINAL SCORE>` |
+| after, final | **100.00%**: 60 killed, 0 survived |
 
 ## Tests reviewed by hand
 

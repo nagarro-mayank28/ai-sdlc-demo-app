@@ -1,7 +1,7 @@
 # AI in SDLC: approval limits by role
 
 **Demo video (8–10 min):** `<PASTE VIDEO LINK HERE>`
-**Pull request:** `<PASTE PR LINK HERE>`
+**Pull request:** `https://github.com/nagarro-mayank28/ai-sdlc-demo-app/pull/1`
 
 ## What was built
 
@@ -55,7 +55,7 @@ Mutated files: `ApprovalService.cs` and `ApprovalLimits.cs`. "Before" is `main` 
 | **before** (main) | **60.00%** | 12 | 0 | 8 | 0 | Baseline. |
 | after, run 1 | 82.22% | 36 | 1 | 8 | 16 | Misleading. One mutant of `?? throw` did not compile, so Stryker's Safe Mode dropped every mutant in `ApproveUnderLock`, the method that holds the approval rules. |
 | after, run 2 | 86.67% | 52 | 0 | 8 | 0 | Rewrote that line as an explicit null check (same behaviour). The rule method is now fully mutated. `ApprovalLimits.cs` scores 100%. |
-| **after, final** | `<PASTE FINAL SCORE>` | | | | | After adding tests for the 8 survivors from run 2. |
+| **after, final** | **100.00%** | 60 | 0 | 0 | 0 | After adding tests for the 8 survivors from run 2. No surviving mutants. |
 
 ### Survivors from run 2, and the verdict on each
 
