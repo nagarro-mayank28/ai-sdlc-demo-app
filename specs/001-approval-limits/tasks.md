@@ -83,8 +83,8 @@ description: "Task list for approval limits by role"
 
 ## Phase 5: User Story 3 - Refusal visible in the UI (P3)  — commit 3
 
-- [ ] T022 [P] [US3] `e2e/pages/LoginPage.ts`, `InvoicesPage.ts`, `ApprovalsPage.ts` with role-based locators
-- [ ] T023 [US3] `e2e/tests/over-limit-approval.spec.ts`: Manager approves a 75,000 invoice → alert with reason, invoice still pending
+- [x] T022 [P] [US3] `e2e/pages/LoginPage.ts`, `InvoicesPage.ts`, `ApprovalsPage.ts` with role-based locators
+- [x] T023 [US3] `e2e/tests/over-limit-approval.spec.ts`: Manager approves a 75,000 invoice → alert with reason, invoice still pending
 
 ---
 
