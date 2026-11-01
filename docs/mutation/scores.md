@@ -4,8 +4,8 @@ Mutated files: ApprovalService.cs, ApprovalLimits.cs. Score = (killed + timeout)
 
 | Run | Commit | Score | Mutant statuses | Files with tested mutants |
 | --- | --- | --- | --- | --- |
-| before | 66cb3f9 (main) | 60.00% | Killed 11, Ignored 31, Survived 8, Timeout 1 | ApprovalService.cs |
-| after | 8fd6934 (HEAD) | 100.00% | Killed 60, Ignored 41 | ApprovalLimits.cs, ApprovalService.cs |
+| before | 66cb3f9 (main) | 60.00% | Killed 12, Ignored 31, Survived 8 | ApprovalService.cs |
+| after | dedb01e (HEAD) | 100.00% | Killed 60, Ignored 41 | ApprovalLimits.cs, ApprovalService.cs |
 
 Surviving mutants after the change:
 
