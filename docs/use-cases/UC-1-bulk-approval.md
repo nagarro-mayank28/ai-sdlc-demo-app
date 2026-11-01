@@ -15,6 +15,7 @@ Approvers should be able to select several pending invoices and approve them tog
 - Exclude individual invoices from the batch before confirming.
 - Keep an audit trail: who approved what, and when, for every invoice in the batch.
 - Invoices over $1,000 need a second approver before they are final.
+  - **Superseded by [spec 001](../../specs/001-approval-limits/spec.md):** dual approval now applies above 500,000.00, the second approver must be a Director, and the same person never counts twice. Bulk approval must reuse those rules.
 
 ## Out of scope for the first release
 

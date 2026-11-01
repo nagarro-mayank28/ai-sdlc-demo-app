@@ -40,7 +40,8 @@
   async function refresh() {
     const invoices = await api('/invoices');
     renderInvoices(invoices);
-    renderPending(invoices.filter((i) => i.status === 'PendingApproval'));
+    // Display only: which invoices can still be decided. Whether an approval is allowed is decided by the API.
+    renderPending(invoices.filter((i) => i.status === 'PendingApproval' || i.status === 'AwaitingSecondApproval'));
   }
 
   function renderInvoices(invoices) {
@@ -72,8 +73,14 @@
       approve.addEventListener('click', () => decide(`/approvals/${invoice.id}/approve`, {}));
       reject.addEventListener('click', () => decide(`/approvals/${invoice.id}/reject`, { reason: reason.value }));
 
+      const summary = el('span', {}, `${invoice.id} · ${invoice.customerName} · ${money.format(invoice.amount)}`);
+      if (invoice.status === 'AwaitingSecondApproval') {
+        summary.append(el('span', { class: 'awaiting-note' },
+          `Awaiting second approval (first: ${invoice.firstApprovedBy})`));
+      }
+
       return el('li', {},
-        el('span', {}, `${invoice.id} · ${invoice.customerName} · ${money.format(invoice.amount)}`),
+        summary,
         el('span', {}, approve),
         el('div', { class: 'reject-row' }, reason, reject));
     }));

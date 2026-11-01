@@ -1,0 +1,4 @@
+#!/bin/sh
+# Same commit-message rule as the agent hook, for commits made outside the agent (Copilot, terminal).
+# Enable once with: git config core.hooksPath scripts/git-hooks
+node "$(git rev-parse --show-toplevel)/.claude/hooks/check-commit-message.mjs" --message "$(grep -v '^#' "$1")"
